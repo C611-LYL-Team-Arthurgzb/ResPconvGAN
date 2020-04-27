@@ -22,6 +22,7 @@ class Bottleneck(nn.Module):
         self.conv3 = PartialConv2d(planes, planes * self.expansion, kernel_size=1, bias=False, multi_channel=True,
                                    return_mask=True)
         self.bn3 = nn.BatchNorm2d(planes * self.expansion)
+        self.bn4 = nn.BatchNorm2d(planes * self.expansion + inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.downsample_nn = nn.BatchNorm2d(planes * 4)
@@ -32,15 +33,15 @@ class Bottleneck(nn.Module):
         residual_mask = mask
         # print("Bottleneck初始", x.shape, mask.shape,self.inplanes,self.planes)
         out, out_mask = self.conv1(x, mask)
-        out = self.bn1(out)
+        #out = self.bn1(out)
         out = self.relu(out)
 
         out, out_mask = self.conv2(out, out_mask)
-        out = self.bn2(out)
+        #out = self.bn2(out)
         out = self.relu(out)
 
         out, out_mask = self.conv3(out, out_mask)
-        out = self.bn3(out)
+        #out = self.bn3(out)
         # print("对齐数据：",self.downsample)
         if self.downsample is not None:
             # residual_mask= self.downsample(x)
@@ -50,6 +51,7 @@ class Bottleneck(nn.Module):
         # print("Bottleneck叠加", out.shape, residual.shape)
         out = out + residual
         out_mask = out_mask + residual_mask
+        out = self.bn4(out)
         out = self.relu(out)
         # print("Bottleneck输出", out.shape, out_mask.shape)
         return out, out_mask
