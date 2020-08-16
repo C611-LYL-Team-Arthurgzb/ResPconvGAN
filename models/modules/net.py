@@ -22,7 +22,7 @@ class Bottleneck(nn.Module):
         self.conv3 = PartialConv2d(planes, planes * self.expansion, kernel_size=1, bias=False, multi_channel=True,
                                    return_mask=True)
         self.bn3 = nn.BatchNorm2d(planes * self.expansion)
-        self.bn4 = nn.BatchNorm2d(planes * self.expansion + inplanes)
+        self.bn4 = nn.BatchNorm2d(planes * self.expansion)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.downsample_nn = nn.BatchNorm2d(planes * 4)
